@@ -3,6 +3,7 @@ import { PortableText } from "@portabletext/react";
 import Link from "next/link";
 import { ArrowLeft, Github, Globe, ExternalLink, Cpu, Calendar, User, Tag, Sparkles } from "lucide-react";
 import { notFound } from "next/navigation";
+import { AdBanner } from "@/components/AdBanner";
 
 // Define category colors (matching ProjectsGrid)
 const getCategoryColor = (category: string) => {
@@ -201,6 +202,9 @@ export default async function ProjectPage({
                         </div>
                     </header>
 
+                    {/* Ad Banner - After Header */}
+                    <AdBanner slot="project-header" className="mb-8" />
+
                     {/* Divider */}
                     <div className="relative mb-16">
                         <div className="absolute inset-0 flex items-center">
@@ -231,8 +235,11 @@ export default async function ProjectPage({
                         )}
                     </article>
 
+                    {/* Ad Banner - After Content */}
+                    <AdBanner slot="project-footer" className="mt-12" />
+
                     {/* Bottom Navigation */}
-                    <div className="mt-20 pt-10 border-t border-white/10">
+                    <div className="mt-12 pt-10 border-t border-white/10">
                         <Link
                             href="/"
                             className="group inline-flex items-center gap-3 text-gray-400 hover:text-white transition-colors"
