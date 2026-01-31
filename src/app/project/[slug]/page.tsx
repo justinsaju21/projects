@@ -61,8 +61,8 @@ const portableTextComponents = {
         code: ({ children }: { children: React.ReactNode }) => (
             <code className="px-2 py-1 rounded bg-purple-500/20 text-purple-300 font-mono text-sm">{children}</code>
         ),
-        link: ({ children, value }: { children: React.ReactNode; value: { href: string } }) => (
-            <a href={value.href} target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 underline underline-offset-4 transition-colors">
+        link: ({ children, value }: { children: React.ReactNode; value?: { href?: string } }) => (
+            <a href={value?.href || "#"} target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 underline underline-offset-4 transition-colors">
                 {children}
             </a>
         ),
