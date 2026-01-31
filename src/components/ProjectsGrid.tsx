@@ -93,9 +93,7 @@ export default function ProjectsGrid({ projects }: Props) {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {displayedProjects.map((project) => (
                         <Link href={`/project/${project.slug}`} key={project._id} className="block group">
-                            <div
-                                className="glass-card rounded-2xl p-6 h-full hover:border-[var(--accent-cyan)]/50 transition-colors"
-                            >
+                            <div className="glass-card rounded-2xl p-6 h-full hover:border-[var(--accent-cyan)]/50 transition-colors">
                                 {/* Category & Author Badge */}
                                 <div className="flex items-start justify-between mb-4">
                                     <span
@@ -160,6 +158,7 @@ export default function ProjectsGrid({ projects }: Props) {
                                                 color: "var(--foreground-muted)",
                                             }}
                                             title="View on GitHub"
+                                            onClick={(e) => e.stopPropagation()}
                                         >
                                             <Github className="w-5 h-5" />
                                         </a>
@@ -176,6 +175,7 @@ export default function ProjectsGrid({ projects }: Props) {
                                                 color: "#ef4444",
                                             }}
                                             title="View Live Demo"
+                                            onClick={(e) => e.stopPropagation()}
                                         >
                                             <Play className="w-5 h-5" />
                                         </a>
@@ -192,6 +192,7 @@ export default function ProjectsGrid({ projects }: Props) {
                                                 color: "#f97316",
                                             }}
                                             title="View on TinkerCAD"
+                                            onClick={(e) => e.stopPropagation()}
                                         >
                                             <ExternalLink className="w-5 h-5" />
                                         </a>
@@ -208,52 +209,52 @@ export default function ProjectsGrid({ projects }: Props) {
                                                 color: "#8b5cf6",
                                             }}
                                             title="View Documentation"
+                                            onClick={(e) => e.stopPropagation()}
                                         >
                                             <ExternalLink className="w-5 h-5" />
                                         </a>
                                     )}
                                 </div>
                             </div>
+                        </Link>
                     ))}
-                        </div>
+                </div>
 
-                {/* Show More/Less Button */ }
-    {
-                            hasMore && (
-                            <div className="text-center mt-12">
-                                <button
-                                    onClick={() => setShowAll(!showAll)}
-                                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all hover:scale-105"
-                                    style={{
-                                        border: "1px solid var(--glass-border)",
-                                        color: "var(--foreground-muted)",
-                                        background: "transparent",
-                                    }}
-                                >
-                                    {showAll ? (
-                                        <>Show Less <ChevronUp className="w-4 h-4" /></>
-                                    ) : (
-                                        <>Show All {filteredProjects.length} Projects <ChevronDown className="w-4 h-4" /></>
-                                    )}
-                                </button>
-                            </div>
-                        )
-    }
+                {/* Show More/Less Button */}
+                {hasMore && (
+                    <div className="text-center mt-12">
+                        <button
+                            onClick={() => setShowAll(!showAll)}
+                            className="inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all hover:scale-105"
+                            style={{
+                                border: "1px solid var(--glass-border)",
+                                color: "var(--foreground-muted)",
+                                background: "transparent",
+                            }}
+                        >
+                            {showAll ? (
+                                <>Show Less <ChevronUp className="w-4 h-4" /></>
+                            ) : (
+                                <>Show All {filteredProjects.length} Projects <ChevronDown className="w-4 h-4" /></>
+                            )}
+                        </button>
+                    </div>
+                )}
 
-                    {/* Footer */}
-                    <footer className="text-center mt-20 pt-10" style={{ borderTop: "1px solid var(--glass-border)" }}>
-                        <p style={{ color: "var(--foreground-dim)" }}>
-                            Part of the{" "}
-                            <a
-                                href="https://justinsaju.me"
-                                className="hover:underline"
-                                style={{ color: "var(--accent-cyan)" }}
-                            >
-                                Justin Saju Ecosystem
-                            </a>
-                        </p>
-                    </footer>
-                </div >
-        </main >
+                {/* Footer */}
+                <footer className="text-center mt-20 pt-10" style={{ borderTop: "1px solid var(--glass-border)" }}>
+                    <p style={{ color: "var(--foreground-dim)" }}>
+                        Part of the{" "}
+                        <a
+                            href="https://justinsaju.me"
+                            className="hover:underline"
+                            style={{ color: "var(--accent-cyan)" }}
+                        >
+                            Justin Saju Ecosystem
+                        </a>
+                    </p>
+                </footer>
+            </div>
+        </main>
     );
 }
