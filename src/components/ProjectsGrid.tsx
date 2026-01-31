@@ -183,7 +183,7 @@ export default function ProjectsGrid({ projects }: Props) {
                                                 </span>
                                                 {project.author && (
                                                     <span className="text-xs text-gray-500 bg-white/5 px-2 py-1 rounded-md">
-                                                        {project.author}
+                                                        {project.author.name}
                                                     </span>
                                                 )}
                                             </div>

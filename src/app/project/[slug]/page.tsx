@@ -124,11 +124,14 @@ export default async function ProjectPage({
                                     <span className="w-2 h-2 rounded-full" style={{ background: categoryColor }} />
                                     {project.category.replace("-", " ").toUpperCase()}
                                 </span>
-                                {project.author && (
-                                    <span className="inline-flex items-center gap-2 text-sm text-gray-400 bg-white/5 px-3 py-2 rounded-lg border border-white/10">
+                                {project.author && project.author.slug && (
+                                    <Link
+                                        href={`/author/${project.author.slug}`}
+                                        className="inline-flex items-center gap-2 text-sm text-gray-400 bg-white/5 px-3 py-2 rounded-lg border border-white/10 hover:bg-white/10 hover:text-purple-400 transition-all"
+                                    >
                                         <User className="w-4 h-4" />
-                                        {project.author}
-                                    </span>
+                                        <span className="underline-offset-4 hover:underline">{project.author.name}</span>
+                                    </Link>
                                 )}
                             </div>
 
