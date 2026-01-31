@@ -19,49 +19,49 @@ const getCategoryColor = (category: string) => {
 // Custom components for PortableText rendering
 const portableTextComponents = {
     block: {
-        h1: ({ children }: { children: React.ReactNode }) => (
+        h1: ({ children }: { children?: React.ReactNode }) => (
             <h1 className="text-3xl md:text-4xl font-bold text-white mt-12 mb-6 first:mt-0">{children}</h1>
         ),
-        h2: ({ children }: { children: React.ReactNode }) => (
+        h2: ({ children }: { children?: React.ReactNode }) => (
             <h2 className="text-2xl md:text-3xl font-bold text-white mt-10 mb-5 flex items-center gap-3">
                 <span className="w-1 h-6 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full" />
                 {children}
             </h2>
         ),
-        h3: ({ children }: { children: React.ReactNode }) => (
+        h3: ({ children }: { children?: React.ReactNode }) => (
             <h3 className="text-xl md:text-2xl font-semibold text-white mt-8 mb-4">{children}</h3>
         ),
-        normal: ({ children }: { children: React.ReactNode }) => (
+        normal: ({ children }: { children?: React.ReactNode }) => (
             <p className="text-gray-300 leading-relaxed mb-6">{children}</p>
         ),
     },
     list: {
-        bullet: ({ children }: { children: React.ReactNode }) => (
+        bullet: ({ children }: { children?: React.ReactNode }) => (
             <ul className="space-y-3 mb-6 ml-4">{children}</ul>
         ),
-        number: ({ children }: { children: React.ReactNode }) => (
+        number: ({ children }: { children?: React.ReactNode }) => (
             <ol className="space-y-3 mb-6 ml-4 list-decimal">{children}</ol>
         ),
     },
     listItem: {
-        bullet: ({ children }: { children: React.ReactNode }) => (
+        bullet: ({ children }: { children?: React.ReactNode }) => (
             <li className="flex items-start gap-3 text-gray-300">
                 <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2.5 flex-shrink-0" />
                 <span>{children}</span>
             </li>
         ),
-        number: ({ children }: { children: React.ReactNode }) => (
+        number: ({ children }: { children?: React.ReactNode }) => (
             <li className="text-gray-300 ml-4">{children}</li>
         ),
     },
     marks: {
-        strong: ({ children }: { children: React.ReactNode }) => (
+        strong: ({ children }: { children?: React.ReactNode }) => (
             <strong className="font-semibold text-white">{children}</strong>
         ),
-        code: ({ children }: { children: React.ReactNode }) => (
+        code: ({ children }: { children?: React.ReactNode }) => (
             <code className="px-2 py-1 rounded bg-purple-500/20 text-purple-300 font-mono text-sm">{children}</code>
         ),
-        link: ({ children, value }: { children: React.ReactNode; value?: { href?: string } }) => (
+        link: ({ children, value }: { children?: React.ReactNode; value?: { href?: string } }) => (
             <a href={value?.href || "#"} target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 underline underline-offset-4 transition-colors">
                 {children}
             </a>
