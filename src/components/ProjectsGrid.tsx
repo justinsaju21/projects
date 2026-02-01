@@ -4,6 +4,15 @@ import { useState } from "react";
 import { Github, ExternalLink, Play, ChevronDown, ChevronUp, Sparkles, Code2, Cpu, Globe, ArrowRight } from "lucide-react";
 import { Project } from "@/lib/sanity";
 import Link from "next/link";
+import { client } from "@/lib/sanity";
+import imageUrlBuilder from "@sanity/image-url";
+
+const builder = imageUrlBuilder(client);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function urlFor(source: any) {
+    return builder.image(source);
+}
 
 type Category = "all" | "vlsi" | "embedded" | "virtual-labs" | "web-apps" | "circuits";
 
@@ -181,10 +190,21 @@ export default function ProjectsGrid({ projects }: Props) {
                                                     <span className="w-1.5 h-1.5 rounded-full" style={{ background: categoryColor }} />
                                                     {project.category.replace("-", " ").toUpperCase()}
                                                 </span>
-                                                {project.author && (
-                                                    <span className="text-xs text-gray-500 bg-white/5 px-2 py-1 rounded-md">
-                                                        {project.author.name}
-                                                    </span>
+                                                {project.authors && project.authors.length > 0 && (
+                                                    <div className="flex -space-x-2">
+                                                        {project.authors.map((author) => (
+                                                            <div key={author._id} className="relative group/author">
+                                                                <span className="flex items-center justify-center w-6 h-6 text-[10px] text-gray-300 bg-white/10 rounded-full border border-white/10 overflow-hidden" title={author.name}>
+                                                                    {author.image ? (
+                                                                        // eslint-disable-next-line @next/next/no-img-element
+                                                                        <img src={urlFor(author.image).width(48).height(48).url()} alt={author.name} className="w-full h-full object-cover" />
+                                                                    ) : (
+                                                                        author.name.substring(0, 2).toUpperCase()
+                                                                    )}
+                                                                </span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 )}
                                             </div>
 

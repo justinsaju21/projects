@@ -22,7 +22,7 @@ export const queries = {
     tinkercad,
     external,
     featured,
-    "author": author->{_id, name, "slug": slug.current, image, role}
+    "authors": authors[]->{_id, name, "slug": slug.current, image, role}
   }`,
 
     // Get projects by category
@@ -38,7 +38,7 @@ export const queries = {
     tinkercad,
     external,
     featured,
-    "author": author->{_id, name, "slug": slug.current, image, role}
+    "authors": authors[]->{_id, name, "slug": slug.current, image, role}
   }`,
 
     // Get single project by slug
@@ -55,7 +55,7 @@ export const queries = {
     tinkercad,
     external,
     featured,
-    "author": author->{_id, name, "slug": slug.current, image, role, bio, email, website, twitter, linkedin, github}
+    "authors": authors[]->{_id, name, "slug": slug.current, image, role, bio, email, website, twitter, linkedin, github}
   }`,
 
     // Get all authors
@@ -85,7 +85,7 @@ export const queries = {
     twitter,
     linkedin,
     github,
-    "projects": *[_type == "project" && author._ref == ^._id] | order(order asc) {
+    "projects": *[_type == "project" && references(^._id)] | order(order asc) {
       _id,
       title,
       "slug": slug.current,
@@ -128,7 +128,7 @@ export interface Project {
     tinkercad?: string;
     external?: string;
     featured?: boolean;
-    author?: Author;
+    authors?: Author[];
 }
 
 export interface AuthorWithProjects extends Author {
