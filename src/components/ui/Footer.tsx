@@ -13,6 +13,7 @@ const socialLinks = [
 
 const footerLinks = [
     { href: "/", label: "Projects" },
+    { href: "/author", label: "Authors" },
 ];
 
 export function Footer() {

@@ -9,6 +9,7 @@ import { ThemeToggle } from "../ThemeToggle";
 
 const navLinks = [
     { href: "/", label: "Projects" },
+    { href: "/author", label: "Authors" },
 ];
 
 export function Navbar() {
