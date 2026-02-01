@@ -1,3 +1,6 @@
+// Revalidate every 60 seconds
+export const revalidate = 60;
+
 import { getAllProjects, Project } from "@/lib/sanity";
 import ProjectsGrid from "@/components/ProjectsGrid";
 

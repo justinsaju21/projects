@@ -146,7 +146,7 @@ export interface AuthorWithProjects extends Author {
 // Fetch functions
 export async function getAllProjects(): Promise<Project[]> {
     try {
-        return await client.fetch(queries.allProjects);
+        return await client.fetch(queries.allProjects, {}, { next: { revalidate: 60 } });
     } catch (error) {
         console.error("Error fetching projects:", error);
         return [];
@@ -155,7 +155,7 @@ export async function getAllProjects(): Promise<Project[]> {
 
 export async function getProjectsByCategory(category: string): Promise<Project[]> {
     try {
-        return await client.fetch(queries.projectsByCategory, { category });
+        return await client.fetch(queries.projectsByCategory, { category }, { next: { revalidate: 60 } });
     } catch (error) {
         console.error("Error fetching projects by category:", error);
         return [];
@@ -164,7 +164,7 @@ export async function getProjectsByCategory(category: string): Promise<Project[]
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
     try {
-        return await client.fetch(queries.projectBySlug, { slug });
+        return await client.fetch(queries.projectBySlug, { slug }, { next: { revalidate: 60 } });
     } catch (error) {
         console.error("Error fetching project by slug:", error);
         return null;
@@ -173,7 +173,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 
 export async function getAllAuthors(): Promise<Author[]> {
     try {
-        return await client.fetch(queries.allAuthors);
+        return await client.fetch(queries.allAuthors, {}, { next: { revalidate: 60 } });
     } catch (error) {
         console.error("Error fetching authors:", error);
         return [];
@@ -182,7 +182,7 @@ export async function getAllAuthors(): Promise<Author[]> {
 
 export async function getAuthorBySlug(slug: string): Promise<AuthorWithProjects | null> {
     try {
-        return await client.fetch(queries.authorBySlug, { slug });
+        return await client.fetch(queries.authorBySlug, { slug }, { next: { revalidate: 60 } });
     } catch (error) {
         console.error("Error fetching author:", error);
         return null;
