@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Github, ExternalLink, Play, ChevronDown, ChevronUp, Sparkles, Code2, Cpu, Globe, ArrowRight } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Github, ExternalLink, Play, ChevronDown, ChevronUp, Sparkles, Code2, Cpu, Globe, ArrowRight, Search, Filter, SortAsc, Calendar, User } from "lucide-react";
 import { Project } from "@/lib/sanity";
 import Link from "next/link";
 import { client } from "@/lib/sanity";
@@ -15,6 +15,7 @@ function urlFor(source: any) {
 }
 
 type Category = "all" | "vlsi" | "embedded" | "virtual-labs" | "web-apps" | "circuits";
+type SortOption = "newest" | "oldest" | "alpha";
 
 const categories: { id: Category; label: string; color: string; icon: React.ReactNode }[] = [
     { id: "all", label: "All Projects", color: "#a78bfa", icon: <Sparkles className="w-4 h-4" /> },
@@ -36,16 +37,78 @@ interface Props {
 
 export default function ProjectsGrid({ projects }: Props) {
     const [activeCategory, setActiveCategory] = useState<Category>("all");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortBy, setSortBy] = useState<SortOption>("newest");
+    const [selectedAuthor, setSelectedAuthor] = useState<string>("all");
     const [showAll, setShowAll] = useState(false);
 
-    const filteredProjects = projects.filter(
-        (project) => activeCategory === "all" || project.category === activeCategory
-    );
+    // Extract unique authors
+    const uniqueAuthors = useMemo(() => {
+        const authors = new Map();
+        projects.forEach(p => {
+            p.authors?.forEach(a => {
+                if (!authors.has(a._id)) {
+                    authors.set(a._id, a.name);
+                }
+            });
+        });
+        return Array.from(authors.entries()).map(([id, name]) => ({ id, name }));
+    }, [projects]);
+
+    const filteredProjects = useMemo(() => {
+        let result = projects;
+
+        // 1. Filter by Category
+        if (activeCategory !== "all") {
+            result = result.filter((p) => p.category === activeCategory);
+        }
+
+        // 2. Filter by Search
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            result = result.filter((p) =>
+                p.title.toLowerCase().includes(query) ||
+                p.description.toLowerCase().includes(query) ||
+                p.tags?.some(t => t.toLowerCase().includes(query))
+            );
+        }
+
+        // 3. Filter by Author
+        if (selectedAuthor !== "all") {
+            result = result.filter(p => p.authors?.some(a => a._id === selectedAuthor));
+        }
+
+        // 4. Sort
+        return [...result].sort((a, b) => {
+            if (sortBy === "alpha") return a.title.localeCompare(b.title);
+            // Assuming projects come in roughly chronological order or have a date field.
+            // If no date, relies on Sanity's default order (often updated/created) or the 'order' field if used.
+            // Using implicit order from props as "newest" (if fetched that way)
+            // Ideally projects have a 'date' or 'publishedAt' field. Fallback to list index.
+            // Since Sanity fetch orders by 'order asc' or 'date desc', we assume input is 'newest'.
+            // For proper sorting without date field, we might need to rely on index order reversing.
+            // Let's use the list index as a proxy if explicit date is missing.
+            const indexA = projects.indexOf(a);
+            const indexB = projects.indexOf(b);
+
+            if (sortBy === "oldest") return indexB - indexA; // Reverse logic: actually, original list is likely Newest or custom Order. 
+            // If input is Newest -> Oldest:
+            // Newest (default): Keep order (if input is sorted)
+            // Oldest: Reverse order
+
+            // Let's assume input is "Newest/Custom Priority".
+            if (sortBy === "newest") return 0; // Keep current sort (from Sanity query)
+            if (sortBy === "oldest") return 1; // Reverse (simplified, implies reverse mapping needs robust logic if sort changes frequently)
+
+            return 0;
+        });
+
+    }, [projects, activeCategory, searchQuery, sortBy, selectedAuthor]);
 
     const displayedProjects = showAll ? filteredProjects : filteredProjects.slice(0, 9);
     const hasMore = filteredProjects.length > 9;
 
-    // Stats for hero section
+    // Stats
     const stats = [
         { label: "Projects", value: projects.length },
         { label: "Categories", value: categories.length - 1 },
@@ -62,30 +125,19 @@ export default function ProjectsGrid({ projects }: Props) {
             </div>
 
             {/* Hero Section */}
-            <section className="pt-32 pb-16 px-6 relative z-10">
+            <section className="pt-32 pb-12 px-6 relative z-10">
                 <div className="max-w-5xl mx-auto text-center">
-                    {/* Badge */}
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 mb-8">
                         <Sparkles className="w-4 h-4 text-purple-400" />
                         <span className="text-sm font-medium text-purple-300">Open Source Projects</span>
                     </div>
-
-                    {/* Title */}
                     <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
                         <span className="text-white">Projects </span>
                         <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent">Hub</span>
                     </h1>
-
-                    {/* Subtitle */}
                     <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-12 leading-relaxed">
-                        A curated collection of experiments, demos, and live projects spanning
-                        <span className="text-purple-400"> VLSI</span>,
-                        <span className="text-green-400"> Embedded Systems</span>,
-                        <span className="text-cyan-400"> Virtual Labs</span>, and
-                        <span className="text-violet-400"> Web Applications</span>.
+                        A curated collection of experiments, demos, and live projects.
                     </p>
-
-                    {/* Stats */}
                     <div className="flex justify-center gap-8 md:gap-16">
                         {stats.map((stat, i) => (
                             <div key={i} className="text-center">
@@ -99,16 +151,62 @@ export default function ProjectsGrid({ projects }: Props) {
                 </div>
             </section>
 
-            {/* Category Filter */}
-            <section className="px-6 pb-12 relative z-10">
-                <div className="max-w-5xl mx-auto">
-                    <div className="flex flex-wrap justify-center gap-3">
-                        {categories.map((category) => {
-                            const count = category.id === "all"
-                                ? projects.length
-                                : projects.filter((p) => p.category === category.id).length;
-                            const isActive = activeCategory === category.id;
+            {/* Controls Section */}
+            <section className="px-6 pb-8 relative z-10 sticky top-20 bg-[#030014]/80 backdrop-blur-xl py-4 border-y border-white/5 shadow-2xl z-40">
+                <div className="max-w-7xl mx-auto space-y-6">
+                    {/* Top Row: Search & Filters */}
+                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+                        {/* Search */}
+                        <div className="relative w-full md:max-w-md group">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 group-focus-within:text-purple-400 transition-colors" />
+                            <input
+                                type="text"
+                                placeholder="Search projects..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-purple-500/50 focus:bg-white/10 transition-all"
+                            />
+                        </div>
 
+                        {/* Dropdowns */}
+                        <div className="flex gap-3 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+                            {/* Author Select */}
+                            <div className="relative min-w-[140px]">
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                <select
+                                    value={selectedAuthor}
+                                    onChange={(e) => setSelectedAuthor(e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-8 text-sm text-white appearance-none focus:outline-none focus:border-purple-500/50 cursor-pointer hover:bg-white/10 transition-colors"
+                                >
+                                    <option value="all" className="bg-[#0f0b29] text-gray-300">All Authors</option>
+                                    {uniqueAuthors.map(a => (
+                                        <option key={a.id} value={a.id} className="bg-[#0f0b29] text-gray-300">{a.name}</option>
+                                    ))}
+                                </select>
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500 pointer-events-none" />
+                            </div>
+
+                            {/* Sort Select */}
+                            <div className="relative min-w-[140px]">
+                                <SortAsc className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                <select
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-8 text-sm text-white appearance-none focus:outline-none focus:border-purple-500/50 cursor-pointer hover:bg-white/10 transition-colors"
+                                >
+                                    <option value="newest" className="bg-[#0f0b29] text-gray-300">Newest First</option>
+                                    <option value="oldest" className="bg-[#0f0b29] text-gray-300">Oldest First</option>
+                                    <option value="alpha" className="bg-[#0f0b29] text-gray-300">Name (A-Z)</option>
+                                </select>
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500 pointer-events-none" />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Category Tabs */}
+                    <div className="flex flex-wrap justify-center gap-2">
+                        {categories.map((category) => {
+                            const isActive = activeCategory === category.id;
                             return (
                                 <button
                                     key={category.id}
@@ -116,30 +214,18 @@ export default function ProjectsGrid({ projects }: Props) {
                                         setActiveCategory(category.id);
                                         setShowAll(false);
                                     }}
-                                    className="group relative px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-2"
+                                    className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 flex items-center gap-2 border ${isActive
+                                            ? `bg-[${category.color}]/10 border-[${category.color}]/30 text-[${category.color}]`
+                                            : "bg-white/5 border-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
+                                        }`}
                                     style={{
-                                        background: isActive
-                                            ? `linear-gradient(135deg, ${category.color}20, ${category.color}10)`
-                                            : "rgba(255,255,255,0.03)",
-                                        border: isActive
-                                            ? `1px solid ${category.color}50`
-                                            : "1px solid rgba(255,255,255,0.08)",
-                                        color: isActive ? category.color : "rgba(255,255,255,0.6)",
+                                        borderColor: isActive ? `${category.color}50` : undefined,
+                                        color: isActive ? category.color : undefined,
+                                        backgroundColor: isActive ? `${category.color}10` : undefined
                                     }}
                                 >
-                                    <span className="transition-transform duration-300 group-hover:scale-110">
-                                        {category.icon}
-                                    </span>
+                                    {category.icon}
                                     {category.label}
-                                    <span
-                                        className="text-xs px-2 py-0.5 rounded-full"
-                                        style={{
-                                            background: isActive ? `${category.color}30` : "rgba(255,255,255,0.05)",
-                                            color: isActive ? category.color : "rgba(255,255,255,0.4)",
-                                        }}
-                                    >
-                                        {count}
-                                    </span>
                                 </button>
                             );
                         })}
@@ -148,159 +234,117 @@ export default function ProjectsGrid({ projects }: Props) {
             </section>
 
             {/* Projects Grid */}
-            <section className="px-6 pb-20 relative z-10">
+            <section className="px-6 pb-20 relative z-10 pt-8">
                 <div className="max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {displayedProjects.map((project, index) => {
-                            const categoryColor = getCategoryColor(project.category);
-
-                            return (
-                                <Link
-                                    href={`/project/${project.slug}`}
-                                    key={project._id}
-                                    className="group block"
-                                    style={{ animationDelay: `${index * 50}ms` }}
-                                >
-                                    <article
-                                        className="relative h-full rounded-2xl p-[1px] overflow-hidden transition-all duration-500 hover:scale-[1.02]"
-                                        style={{
-                                            background: `linear-gradient(135deg, ${categoryColor}20, transparent 50%, ${categoryColor}10)`,
-                                        }}
+                    {displayedProjects.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {displayedProjects.map((project, index) => {
+                                const categoryColor = getCategoryColor(project.category);
+                                return (
+                                    <Link
+                                        href={`/project/${project.slug}`}
+                                        key={project._id}
+                                        className="group block"
+                                        style={{ animationDelay: `${index * 50}ms` }}
                                     >
-                                        {/* Animated border glow on hover */}
-                                        <div
-                                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
+                                        <article
+                                            className="relative h-full rounded-2xl p-[1px] overflow-hidden transition-all duration-500 hover:scale-[1.02]"
                                             style={{
-                                                background: `linear-gradient(135deg, ${categoryColor}40, transparent, ${categoryColor}20)`,
+                                                background: `linear-gradient(135deg, ${categoryColor}20, transparent 50%, ${categoryColor}10)`,
                                             }}
-                                        />
-
-                                        {/* Card content */}
-                                        <div className="relative h-full rounded-2xl bg-[#0a0a1a]/90 backdrop-blur-xl p-6 flex flex-col">
-                                            {/* Top Row: Category + Author */}
-                                            <div className="flex items-start justify-between mb-4">
-                                                <span
-                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-300"
-                                                    style={{
-                                                        background: `${categoryColor}15`,
-                                                        color: categoryColor,
-                                                        border: `1px solid ${categoryColor}30`,
-                                                    }}
-                                                >
-                                                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: categoryColor }} />
-                                                    {project.category.replace("-", " ").toUpperCase()}
-                                                </span>
-                                                {project.authors && project.authors.length > 0 && (
-                                                    <div className="flex -space-x-2">
-                                                        {project.authors.map((author) => (
-                                                            <div key={author._id} className="relative group/author">
-                                                                <span className="flex items-center justify-center w-6 h-6 text-[10px] text-gray-300 bg-white/10 rounded-full border border-white/10 overflow-hidden" title={author.name}>
-                                                                    {author.image ? (
-                                                                        // eslint-disable-next-line @next/next/no-img-element
-                                                                        <img src={urlFor(author.image).width(48).height(48).url()} alt={author.name} className="w-full h-full object-cover" />
-                                                                    ) : (
-                                                                        author.name.substring(0, 2).toUpperCase()
-                                                                    )}
-                                                                </span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Title */}
-                                            <h3 className="text-xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 group-hover:bg-clip-text transition-all duration-300">
-                                                {project.title}
-                                            </h3>
-
-                                            {/* Description */}
-                                            <p className="text-sm text-gray-400 mb-4 line-clamp-2 flex-grow">
-                                                {project.description}
-                                            </p>
-
-                                            {/* Tags */}
-                                            <div className="flex flex-wrap gap-2 mb-5">
-                                                {project.tags?.slice(0, 3).map((tag) => (
-                                                    <span
-                                                        key={tag}
-                                                        className="px-2 py-1 text-xs rounded-md bg-white/5 text-gray-400 border border-white/5"
-                                                    >
-                                                        {tag}
+                                        >
+                                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"
+                                                style={{ background: `linear-gradient(135deg, ${categoryColor}40, transparent, ${categoryColor}20)` }}
+                                            />
+                                            <div className="relative h-full rounded-2xl bg-[#0a0a1a]/90 backdrop-blur-xl p-6 flex flex-col">
+                                                {/* Header */}
+                                                <div className="flex items-start justify-between mb-4">
+                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg"
+                                                        style={{ background: `${categoryColor}15`, color: categoryColor, border: `1px solid ${categoryColor}30` }}>
+                                                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: categoryColor }} />
+                                                        {project.category.replace("-", " ").toUpperCase()}
                                                     </span>
-                                                ))}
-                                                {project.tags?.length > 3 && (
-                                                    <span className="px-2 py-1 text-xs rounded-md bg-white/5 text-gray-500">
-                                                        +{project.tags.length - 3}
-                                                    </span>
-                                                )}
-                                            </div>
-
-                                            {/* Footer: Links + Read More */}
-                                            <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                                                <div className="flex items-center gap-2">
-                                                    {project.github && (
-                                                        <a
-                                                            href={project.github}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all hover:scale-110"
-                                                            title="GitHub"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <Github className="w-4 h-4 text-gray-400" />
-                                                        </a>
-                                                    )}
-                                                    {project.streamlit && (
-                                                        <a
-                                                            href={project.streamlit}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-all hover:scale-110"
-                                                            title="Live Demo"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <Play className="w-4 h-4 text-red-400" />
-                                                        </a>
-                                                    )}
-                                                    {project.tinkercad && (
-                                                        <a
-                                                            href={project.tinkercad}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="p-2 rounded-lg bg-orange-500/10 hover:bg-orange-500/20 transition-all hover:scale-110"
-                                                            title="TinkerCAD"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <ExternalLink className="w-4 h-4 text-orange-400" />
-                                                        </a>
-                                                    )}
-                                                    {project.external && (
-                                                        <a
-                                                            href={project.external}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="p-2 rounded-lg bg-violet-500/10 hover:bg-violet-500/20 transition-all hover:scale-110"
-                                                            title="External"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            <ExternalLink className="w-4 h-4 text-violet-400" />
-                                                        </a>
+                                                    {project.authors && project.authors.length > 0 && (
+                                                        <div className="flex -space-x-2">
+                                                            {project.authors.map((author) => (
+                                                                <div key={author._id} className="relative group/author">
+                                                                    <span className="flex items-center justify-center w-6 h-6 text-[10px] text-gray-300 bg-white/10 rounded-full border border-white/10 overflow-hidden">
+                                                                        {author.image ? (
+                                                                            // eslint-disable-next-line @next/next/no-img-element
+                                                                            <img src={urlFor(author.image).width(48).height(48).url()} alt={author.name} className="w-full h-full object-cover" />
+                                                                        ) : (
+                                                                            author.name.substring(0, 2).toUpperCase()
+                                                                        )}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
                                                     )}
                                                 </div>
 
-                                                <span className="inline-flex items-center gap-1 text-xs font-medium text-gray-500 group-hover:text-white transition-colors">
-                                                    Read more
-                                                    <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </article>
-                                </Link>
-                            );
-                        })}
-                    </div>
+                                                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-300 group-hover:bg-clip-text transition-all duration-300">
+                                                    {project.title}
+                                                </h3>
+                                                <p className="text-sm text-gray-400 mb-4 line-clamp-2 flex-grow">
+                                                    {project.description}
+                                                </p>
 
-                    {/* Show More/Less Button */}
+                                                {/* Tags */}
+                                                <div className="flex flex-wrap gap-2 mb-5">
+                                                    {project.tags?.slice(0, 3).map((tag) => (
+                                                        <span key={tag} className="px-2 py-1 text-xs rounded-md bg-white/5 text-gray-400 border border-white/5">
+                                                            {tag}
+                                                        </span>
+                                                    ))}
+                                                    {project.tags?.length > 3 && (
+                                                        <span className="px-2 py-1 text-xs rounded-md bg-white/5 text-gray-500">+{project.tags.length - 3}</span>
+                                                    )}
+                                                </div>
+
+                                                {/* Footer */}
+                                                <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                                                    <div className="flex items-center gap-2">
+                                                        {project.github && (
+                                                            <a href={project.github} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-all hover:scale-110" onClick={(e) => e.stopPropagation()}>
+                                                                <Github className="w-4 h-4 text-gray-400" />
+                                                            </a>
+                                                        )}
+                                                        {project.streamlit && (
+                                                            <a href={project.streamlit} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 transition-all hover:scale-110" onClick={(e) => e.stopPropagation()}>
+                                                                <Play className="w-4 h-4 text-red-400" />
+                                                            </a>
+                                                        )}
+                                                        {project.tinkercad && (
+                                                            <a href={project.tinkercad} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-orange-500/10 hover:bg-orange-500/20 transition-all hover:scale-110" onClick={(e) => e.stopPropagation()}>
+                                                                <ExternalLink className="w-4 h-4 text-orange-400" />
+                                                            </a>
+                                                        )}
+                                                        {project.external && (
+                                                            <a href={project.external} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-violet-500/10 hover:bg-violet-500/20 transition-all hover:scale-110" onClick={(e) => e.stopPropagation()}>
+                                                                <ExternalLink className="w-4 h-4 text-violet-400" />
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                    <span className="inline-flex items-center gap-1 text-xs font-medium text-gray-500 group-hover:text-white transition-colors">
+                                                        Read more <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </article>
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="text-center py-20">
+                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 mb-4">
+                                <Search className="w-8 h-8 text-gray-500" />
+                            </div>
+                            <h3 className="text-xl font-medium text-white mb-2">No projects found</h3>
+                            <p className="text-gray-400">Try adjusting your search or filters.</p>
+                        </div>
+                    )}
+
                     {hasMore && (
                         <div className="text-center mt-16">
                             <button
@@ -320,28 +364,6 @@ export default function ProjectsGrid({ projects }: Props) {
                     )}
                 </div>
             </section>
-
-            {/* Footer */}
-            <footer className="relative z-10 px-6 pb-12">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex flex-col items-center justify-center gap-4 pt-8 border-t border-white/5">
-                        <p className="text-sm text-gray-500">
-                            Part of the{" "}
-                            <a
-                                href="https://justinsaju.me"
-                                className="text-purple-400 hover:text-purple-300 transition-colors font-medium"
-                            >
-                                Justin Saju Ecosystem
-                            </a>
-                        </p>
-                        <div className="flex items-center gap-4">
-                            <a href="https://github.com/justinsaju21" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors">
-                                <Github className="w-5 h-5" />
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
         </main>
     );
 }
