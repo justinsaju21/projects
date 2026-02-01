@@ -12,14 +12,7 @@ export function AdBanner({ slot = "header", className = "" }: AdBannerProps) {
             className={`w-full max-w-4xl mx-auto my-8 ${className}`}
             data-ad-slot={slot}
         >
-            <div
-                className="rounded-xl p-4 text-center min-h-[90px] flex items-center justify-center"
-                style={{
-                    background: "rgba(30, 27, 75, 0.5)",
-                    border: "1px solid rgba(139, 92, 246, 0.2)",
-                    backdropFilter: "blur(12px)",
-                }}
-            >
+            <div className="glass rounded-xl p-4 text-center min-h-[90px] flex items-center justify-center">
                 <div className="text-gray-400 text-sm">
                     {/* Google Ads will render here */}
                     <p className="opacity-50">Ad Space - {slot}</p>
