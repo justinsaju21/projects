@@ -6,6 +6,7 @@ import { Project } from "@/lib/sanity";
 import Link from "next/link";
 import { client } from "@/lib/sanity";
 import imageUrlBuilder from "@sanity/image-url";
+import { AdBanner } from "./AdBanner";
 
 const builder = imageUrlBuilder(client);
 
@@ -215,8 +216,8 @@ export default function ProjectsGrid({ projects }: Props) {
                                         setShowAll(false);
                                     }}
                                     className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 flex items-center gap-2 border ${isActive
-                                            ? `bg-[${category.color}]/10 border-[${category.color}]/30 text-[${category.color}]`
-                                            : "bg-white/5 border-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
+                                        ? `bg-[${category.color}]/10 border-[${category.color}]/30 text-[${category.color}]`
+                                        : "bg-white/5 border-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
                                         }`}
                                     style={{
                                         borderColor: isActive ? `${category.color}50` : undefined,
@@ -236,6 +237,9 @@ export default function ProjectsGrid({ projects }: Props) {
             {/* Projects Grid */}
             <section className="px-6 pb-20 relative z-10 pt-8">
                 <div className="max-w-7xl mx-auto">
+                    {/* Top Ad (Consistent with Gateway/Blog) */}
+                    <AdBanner slot="projects-grid-top" className="mb-12" />
+
                     {displayedProjects.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {displayedProjects.map((project, index) => {
@@ -362,6 +366,9 @@ export default function ProjectsGrid({ projects }: Props) {
                             </button>
                         </div>
                     )}
+
+                    {/* Bottom Ad */}
+                    <AdBanner slot="projects-grid-bottom" className="mt-20" />
                 </div>
             </section>
         </main>
