@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Navbar } from "@/components/ui/Navbar";
+import { Footer } from "@/components/ui/Footer";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,31 +30,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
-        {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 z-50 glass">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="https://justinsaju.me" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center text-white font-bold text-lg">
-                J
-              </div>
-              <span className="text-lg font-semibold text-foreground group-hover:text-[var(--accent-cyan)] transition-colors">
-                Justin Jacob Saju
-              </span>
-            </a>
-            <div className="flex items-center gap-6">
-              <a
-                href="https://justinsaju.me"
-                className="text-sm text-[var(--foreground-muted)] hover:text-[var(--accent-cyan)] transition-colors"
-              >
-                ← Back to Gateway
-              </a>
-            </div>
-          </div>
-        </nav>
-
-        {children}
+        <ThemeProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

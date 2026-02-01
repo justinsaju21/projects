@@ -124,14 +124,22 @@ export default async function ProjectPage({
                                     <span className="w-2 h-2 rounded-full" style={{ background: categoryColor }} />
                                     {project.category.replace("-", " ").toUpperCase()}
                                 </span>
-                                {project.author && project.author.slug && (
-                                    <Link
-                                        href={`/author/${project.author.slug}`}
-                                        className="inline-flex items-center gap-2 text-sm text-gray-400 bg-white/5 px-3 py-2 rounded-lg border border-white/10 hover:bg-white/10 hover:text-purple-400 transition-all"
-                                    >
-                                        <User className="w-4 h-4" />
-                                        <span className="underline-offset-4 hover:underline">{project.author.name}</span>
-                                    </Link>
+                                {project.authors && project.authors.length > 0 && (
+                                    <div className="flex -space-x-2">
+                                        {project.authors.map((author: any) => (
+                                            <div key={author._id} className="relative group/author">
+                                                {/* Author Avatar/Initials */}
+                                                <span className="flex items-center justify-center w-8 h-8 text-xs text-gray-300 bg-white/10 rounded-full border border-white/10 overflow-hidden" title={author.name}>
+                                                    {author.image ? (
+                                                        // eslint-disable-next-line @next/next/no-img-element
+                                                        <img src={author.image} alt={author.name} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        author.name.substring(0, 2).toUpperCase()
+                                                    )}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 )}
                             </div>
 
