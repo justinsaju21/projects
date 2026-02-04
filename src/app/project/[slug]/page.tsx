@@ -1,4 +1,4 @@
-import { getProjectBySlug } from "@/lib/sanity";
+import { getProjectBySlug, urlFor } from "@/lib/sanity";
 import { PortableText } from "@portabletext/react";
 import Link from "next/link";
 import { ArrowLeft, Github, Globe, ExternalLink, Cpu, Calendar, User, Tag, Sparkles } from "lucide-react";
@@ -22,19 +22,19 @@ const getCategoryColor = (category: string) => {
 const portableTextComponents = {
     block: {
         h1: ({ children }: { children?: React.ReactNode }) => (
-            <h1 className="text-3xl md:text-4xl font-bold text-white mt-12 mb-6 first:mt-0">{children}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-[var(--foreground)] mt-12 mb-6 first:mt-0">{children}</h1>
         ),
         h2: ({ children }: { children?: React.ReactNode }) => (
-            <h2 className="text-2xl md:text-3xl font-bold text-white mt-10 mb-5 flex items-center gap-3">
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--foreground)] mt-10 mb-5 flex items-center gap-3">
                 <span className="w-1 h-6 bg-gradient-to-b from-purple-500 to-pink-500 rounded-full" />
                 {children}
             </h2>
         ),
         h3: ({ children }: { children?: React.ReactNode }) => (
-            <h3 className="text-xl md:text-2xl font-semibold text-white mt-8 mb-4">{children}</h3>
+            <h3 className="text-xl md:text-2xl font-semibold text-[var(--foreground)] mt-8 mb-4">{children}</h3>
         ),
         normal: ({ children }: { children?: React.ReactNode }) => (
-            <p className="text-gray-300 leading-relaxed mb-6">{children}</p>
+            <p className="text-[var(--foreground-muted)] leading-relaxed mb-6">{children}</p>
         ),
     },
     list: {
@@ -47,21 +47,21 @@ const portableTextComponents = {
     },
     listItem: {
         bullet: ({ children }: { children?: React.ReactNode }) => (
-            <li className="flex items-start gap-3 text-gray-300">
+            <li className="flex items-start gap-3 text-[var(--foreground-muted)]">
                 <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2.5 flex-shrink-0" />
                 <span>{children}</span>
             </li>
         ),
         number: ({ children }: { children?: React.ReactNode }) => (
-            <li className="text-gray-300 ml-4">{children}</li>
+            <li className="text-[var(--foreground-muted)] ml-4">{children}</li>
         ),
     },
     marks: {
         strong: ({ children }: { children?: React.ReactNode }) => (
-            <strong className="font-semibold text-white">{children}</strong>
+            <strong className="font-semibold text-[var(--foreground)]">{children}</strong>
         ),
         code: ({ children }: { children?: React.ReactNode }) => (
-            <code className="px-2 py-1 rounded bg-purple-500/20 text-purple-300 font-mono text-sm">{children}</code>
+            <code className="px-2 py-1 rounded bg-[var(--glass-bg)] border border-[var(--glass-border)] text-purple-400 font-mono text-sm">{children}</code>
         ),
         link: ({ children, value }: { children?: React.ReactNode; value?: { href?: string } }) => (
             <a href={value?.href || "#"} target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 underline underline-offset-4 transition-colors">
@@ -87,14 +87,14 @@ export default async function ProjectPage({
 
     return (
         <SidebarAdLayout>
-            <main className="min-h-screen relative overflow-hidden">
+            <main className="min-h-screen relative overflow-hidden bg-[var(--background)]">
                 {/* Animated Background */}
                 <div className="fixed inset-0 pointer-events-none">
                     <div
-                        className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[150px] opacity-30"
+                        className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[150px] opacity-20"
                         style={{ background: `radial-gradient(circle, ${categoryColor}, transparent)` }}
                     />
-                    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-purple-500/20 to-transparent rounded-full blur-[120px]" />
+                    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-purple-500/10 to-transparent rounded-full blur-[120px]" />
                 </div>
 
                 {/* Content */}
@@ -103,7 +103,7 @@ export default async function ProjectPage({
                         {/* Back Link */}
                         <Link
                             href="/"
-                            className="group inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-10"
+                            className="group inline-flex items-center gap-2 text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors mb-10"
                         >
                             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                             <span>Back to Projects</span>
@@ -129,10 +129,14 @@ export default async function ProjectPage({
                                         {project.authors.map((author: any) => (
                                             <div key={author._id} className="relative group/author">
                                                 {/* Author Avatar/Initials */}
-                                                <span className="flex items-center justify-center w-8 h-8 text-xs text-gray-300 bg-white/10 rounded-full border border-white/10 overflow-hidden" title={author.name}>
+                                                <span className="flex items-center justify-center w-8 h-8 text-xs text-[var(--foreground-muted)] bg-[var(--glass-bg)] rounded-full border border-[var(--glass-border)] overflow-hidden" title={author.name}>
                                                     {author.image ? (
                                                         // eslint-disable-next-line @next/next/no-img-element
-                                                        <img src={author.image} alt={author.name} className="w-full h-full object-cover" />
+                                                        <img
+                                                            src={urlFor(author.image).width(64).height(64).url()}
+                                                            alt={author.name}
+                                                            className="w-full h-full object-cover"
+                                                        />
                                                     ) : (
                                                         author.name.substring(0, 2).toUpperCase()
                                                     )}
@@ -145,21 +149,21 @@ export default async function ProjectPage({
 
                             {/* Title */}
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-                                <span className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+                                <span className="bg-gradient-to-r from-[var(--foreground)] via-[var(--foreground-muted)] to-[var(--foreground-dim)] bg-clip-text text-transparent">
                                     {project.title}
                                 </span>
                             </h1>
 
                             {/* Description */}
-                            <p className="text-xl text-gray-400 leading-relaxed mb-8">{project.description}</p>
+                            <p className="text-xl text-[var(--foreground-muted)] leading-relaxed mb-8">{project.description}</p>
 
                             {/* Tags */}
                             <div className="flex flex-wrap items-center gap-2 mb-8">
-                                <Tag className="w-4 h-4 text-gray-500" />
+                                <Tag className="w-4 h-4 text-[var(--foreground-muted)]" />
                                 {project.tags?.map((tag) => (
                                     <span
                                         key={tag}
-                                        className="px-3 py-1 text-sm rounded-full bg-white/5 text-gray-400 border border-white/5"
+                                        className="px-3 py-1 text-sm rounded-full bg-[var(--glass-bg)] text-[var(--foreground-muted)] border border-[var(--glass-border)]"
                                     >
                                         {tag}
                                     </span>
@@ -173,10 +177,10 @@ export default async function ProjectPage({
                                         href={project.github}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="group inline-flex items-center gap-3 px-6 py-3.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+                                        className="group inline-flex items-center gap-3 px-6 py-3.5 rounded-xl bg-[var(--glass-bg)] border border-[var(--glass-border)] hover:bg-[var(--glass-border)] transition-all duration-300"
                                     >
-                                        <Github className="w-5 h-5 text-gray-300" />
-                                        <span className="font-medium text-white">View Source</span>
+                                        <Github className="w-5 h-5 text-[var(--foreground-muted)] group-hover:text-[var(--foreground)]" />
+                                        <span className="font-medium text-[var(--foreground)]">View Source</span>
                                     </a>
                                 )}
                                 {project.streamlit && (
@@ -221,10 +225,10 @@ export default async function ProjectPage({
                         {/* Divider */}
                         <div className="relative mb-16">
                             <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-white/10" />
+                                <div className="w-full border-t border-[var(--glass-border)]" />
                             </div>
                             <div className="relative flex justify-center">
-                                <span className="px-4 py-2 bg-[#030014] text-gray-500 text-sm flex items-center gap-2">
+                                <span className="px-4 py-2 bg-[var(--background)] text-[var(--foreground-muted)] text-sm flex items-center gap-2">
                                     <Sparkles className="w-4 h-4" />
                                     Project Details
                                 </span>
@@ -236,12 +240,12 @@ export default async function ProjectPage({
                             {project.body ? (
                                 <PortableText value={project.body} components={portableTextComponents} />
                             ) : (
-                                <div className="p-12 rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent text-center">
+                                <div className="p-12 rounded-2xl border border-[var(--glass-border)] bg-[var(--glass-bg)] text-center">
                                     <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-purple-500/10 flex items-center justify-center">
                                         <Sparkles className="w-8 h-8 text-purple-400" />
                                     </div>
-                                    <h3 className="text-xl font-semibold text-white mb-2">Documentation Coming Soon</h3>
-                                    <p className="text-gray-400">
+                                    <h3 className="text-xl font-semibold text-[var(--foreground)] mb-2">Documentation Coming Soon</h3>
+                                    <p className="text-[var(--foreground-muted)]">
                                         Detailed documentation is being prepared for this project.
                                     </p>
                                 </div>
@@ -252,10 +256,10 @@ export default async function ProjectPage({
                         <AdBanner slot="project-footer" className="mt-12" />
 
                         {/* Bottom Navigation */}
-                        <div className="mt-12 pt-10 border-t border-white/10">
+                        <div className="mt-12 pt-10 border-t border-[var(--glass-border)]">
                             <Link
                                 href="/"
-                                className="group inline-flex items-center gap-3 text-gray-400 hover:text-white transition-colors"
+                                className="group inline-flex items-center gap-3 text-[var(--foreground-muted)] hover:text-[var(--foreground)] transition-colors"
                             >
                                 <ArrowLeft className="w-5 h-5 group-hover:-translate-x-2 transition-transform" />
                                 <span className="text-lg">Back to All Projects</span>

@@ -94,7 +94,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
                                             href={author.website}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-foreground-muted hover:text-accent-cyan hover:bg-white/10 transition-all"
+                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--glass-bg)] border border-[var(--glass-border)] text-[var(--foreground-muted)] hover:text-accent-cyan hover:bg-[var(--glass-bg)] transition-all"
                                         >
                                             <Globe className="w-4 h-4" />
                                             <span className="text-sm">Website</span>
@@ -103,7 +103,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
                                     {author.email && (
                                         <a
                                             href={`mailto:${author.email}`}
-                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-foreground-muted hover:text-accent-cyan hover:bg-white/10 transition-all"
+                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--glass-bg)] border border-[var(--glass-border)] text-[var(--foreground-muted)] hover:text-accent-cyan hover:bg-[var(--glass-bg)] transition-all"
                                         >
                                             <Mail className="w-4 h-4" />
                                             <span className="text-sm">Email</span>
@@ -114,7 +114,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
                                             href={`https://github.com/${author.github}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-foreground-muted hover:text-accent-cyan hover:bg-white/10 transition-all"
+                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--glass-bg)] border border-[var(--glass-border)] text-[var(--foreground-muted)] hover:text-accent-cyan hover:bg-[var(--glass-bg)] transition-all"
                                         >
                                             <Github className="w-4 h-4" />
                                             <span className="text-sm">GitHub</span>
@@ -125,7 +125,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
                                             href={author.linkedin}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-foreground-muted hover:text-accent-cyan hover:bg-white/10 transition-all"
+                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--glass-bg)] border border-[var(--glass-border)] text-[var(--foreground-muted)] hover:text-accent-cyan hover:bg-[var(--glass-bg)] transition-all"
                                         >
                                             <Linkedin className="w-4 h-4" />
                                             <span className="text-sm">LinkedIn</span>
@@ -136,7 +136,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
                                             href={`https://twitter.com/${author.twitter}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-foreground-muted hover:text-accent-cyan hover:bg-white/10 transition-all"
+                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--glass-bg)] border border-[var(--glass-border)] text-[var(--foreground-muted)] hover:text-accent-cyan hover:bg-[var(--glass-bg)] transition-all"
                                         >
                                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                                                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
