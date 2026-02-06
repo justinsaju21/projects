@@ -157,16 +157,16 @@ export default function ProjectsGrid({ projects }: Props) {
                 <div className="max-w-7xl mx-auto space-y-6">
                     {/* Top Row: Search & Filters */}
                     {/* Top Row: Search & Filters */}
-                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-[var(--glass-bg)] border border-[var(--glass-border)] p-4 rounded-2xl backdrop-blur-md">
                         {/* Search */}
                         <div className="relative w-full md:max-w-md group">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--foreground-muted)] group-focus-within:text-purple-400 transition-colors" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--foreground-dim)] group-focus-within:text-[var(--accent-cyan)] transition-colors" />
                             <input
                                 type="text"
                                 placeholder="Search projects..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-[var(--midnight-light)] border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-4 text-sm text-[var(--foreground)] placeholder:text-[var(--foreground-muted)] focus:outline-none focus:border-purple-500/50 focus:bg-[var(--glass-bg)] transition-all"
+                                className="w-full bg-[var(--midnight)]/50 border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-4 text-sm text-[var(--foreground)] placeholder:text-[var(--foreground-dim)] focus:outline-none focus:border-[var(--accent-cyan)]/50 focus:bg-[var(--midnight)]/80 transition-all"
                             />
                         </div>
 
@@ -174,33 +174,33 @@ export default function ProjectsGrid({ projects }: Props) {
                         <div className="flex gap-3 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
                             {/* Author Select */}
                             <div className="relative min-w-[140px]">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--foreground-muted)]" />
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--foreground-dim)]" />
                                 <select
                                     value={selectedAuthor}
                                     onChange={(e) => setSelectedAuthor(e.target.value)}
-                                    className="w-full bg-[var(--midnight-light)] border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-8 text-sm text-[var(--foreground)] appearance-none focus:outline-none focus:border-purple-500/50 cursor-pointer hover:bg-[var(--glass-bg)] transition-colors"
+                                    className="w-full bg-[var(--midnight)]/50 border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-8 text-sm text-[var(--foreground)] appearance-none focus:outline-none focus:border-[var(--accent-cyan)]/50 cursor-pointer hover:bg-[var(--midnight)]/80 transition-colors"
                                 >
                                     <option value="all" className="bg-[var(--background)] text-[var(--foreground)]">All Authors</option>
                                     {uniqueAuthors.map(a => (
                                         <option key={a.id} value={a.id} className="bg-[var(--background)] text-[var(--foreground)]">{a.name}</option>
                                     ))}
                                 </select>
-                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[var(--foreground-muted)] pointer-events-none" />
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[var(--foreground-dim)] pointer-events-none" />
                             </div>
 
                             {/* Sort Select */}
                             <div className="relative min-w-[140px]">
-                                <SortAsc className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--foreground-muted)]" />
+                                <SortAsc className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--foreground-dim)]" />
                                 <select
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value as SortOption)}
-                                    className="w-full bg-[var(--midnight-light)] border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-8 text-sm text-[var(--foreground)] appearance-none focus:outline-none focus:border-purple-500/50 cursor-pointer hover:bg-[var(--glass-bg)] transition-colors"
+                                    className="w-full bg-[var(--midnight)]/50 border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-8 text-sm text-[var(--foreground)] appearance-none focus:outline-none focus:border-[var(--accent-cyan)]/50 cursor-pointer hover:bg-[var(--midnight)]/80 transition-colors"
                                 >
                                     <option value="newest" className="bg-[var(--background)] text-[var(--foreground)]">Newest First</option>
                                     <option value="oldest" className="bg-[var(--background)] text-[var(--foreground)]">Oldest First</option>
                                     <option value="alpha" className="bg-[var(--background)] text-[var(--foreground)]">Name (A-Z)</option>
                                 </select>
-                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[var(--foreground-muted)] pointer-events-none" />
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[var(--foreground-dim)] pointer-events-none" />
                             </div>
                         </div>
                     </div>
