@@ -18,7 +18,7 @@ const footerLinks = [
 
 export function Footer() {
     return (
-        <footer className="relative pt-20 pb-8 overflow-hidden">
+        <footer className="relative pt-20 pb-8 overflow-hidden bg-[var(--midnight-light)]/50 backdrop-blur-3xl border-t border-[var(--glass-border)]">
             {/* Background effects */}
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-accent-cyan/5 rounded-full blur-3xl" />

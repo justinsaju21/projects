@@ -58,8 +58,8 @@ export function Navbar() {
                                 <span style={{ color: "var(--background)" }}>J</span>
                             </div>
                             <div className="flex items-baseline gap-1.5">
-                                <span style={{ color: "var(--foreground)" }} className="font-bold text-lg tracking-tight">Justin&apos;s</span>
-                                <span style={{ color: "var(--accent-cyan)" }} className="font-bold text-lg tracking-tight">Projects</span>
+                                <span style={{ color: "var(--foreground)" }} className="font-bold text-lg tracking-tight">Justin Jacob</span>
+                                <span style={{ color: "var(--foreground)" }} className="font-bold text-lg tracking-tight">Saju</span>
                             </div>
                         </Link>
 
