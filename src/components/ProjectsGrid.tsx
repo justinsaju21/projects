@@ -153,9 +153,8 @@ export default function ProjectsGrid({ projects }: Props) {
             </section>
 
             {/* Controls Section */}
-            <section className="px-6 pb-8 relative z-10 sticky top-20 bg-[var(--background)]/80 backdrop-blur-xl py-4 border-y border-[var(--glass-border)] shadow-2xl z-40">
+            <section className="px-6 pb-12 relative z-10">
                 <div className="max-w-7xl mx-auto space-y-6">
-                    {/* Top Row: Search & Filters */}
                     {/* Top Row: Search & Filters */}
                     <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-[var(--glass-bg)] border border-[var(--glass-border)] p-4 rounded-2xl backdrop-blur-md">
                         {/* Search */}
