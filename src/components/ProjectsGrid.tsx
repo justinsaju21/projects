@@ -166,19 +166,37 @@ export default function ProjectsGrid({ projects }: Props) {
                                 placeholder="Search projects..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-[var(--midnight)]/50 border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-4 text-sm text-[var(--foreground)] placeholder:text-[var(--foreground-dim)] focus:outline-none focus:border-[var(--accent-cyan)]/50 focus:bg-[var(--midnight)]/80 transition-all"
+                                className="w-full bg-[var(--midnight-light)]/50 border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-4 text-sm text-[var(--foreground)] placeholder:text-[var(--foreground-dim)] focus:outline-none focus:border-[var(--accent-cyan)]/50 focus:bg-[var(--midnight-light)]/80 transition-all"
                             />
                         </div>
 
                         {/* Dropdowns */}
                         <div className="flex gap-3 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+                            {/* Category Select */}
+                            <div className="relative min-w-[140px]">
+                                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--foreground-dim)]" />
+                                <select
+                                    value={activeCategory}
+                                    onChange={(e) => {
+                                        setActiveCategory(e.target.value as Category);
+                                        setShowAll(false);
+                                    }}
+                                    className="w-full bg-[var(--midnight-light)]/50 border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-8 text-sm text-[var(--foreground)] appearance-none focus:outline-none focus:border-[var(--accent-cyan)]/50 cursor-pointer hover:bg-[var(--midnight-light)]/80 transition-colors"
+                                >
+                                    {categories.map(c => (
+                                        <option key={c.id} value={c.id} className="bg-[var(--background)] text-[var(--foreground)]">{c.label}</option>
+                                    ))}
+                                </select>
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[var(--foreground-dim)] pointer-events-none" />
+                            </div>
+
                             {/* Author Select */}
                             <div className="relative min-w-[140px]">
                                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--foreground-dim)]" />
                                 <select
                                     value={selectedAuthor}
                                     onChange={(e) => setSelectedAuthor(e.target.value)}
-                                    className="w-full bg-[var(--midnight)]/50 border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-8 text-sm text-[var(--foreground)] appearance-none focus:outline-none focus:border-[var(--accent-cyan)]/50 cursor-pointer hover:bg-[var(--midnight)]/80 transition-colors"
+                                    className="w-full bg-[var(--midnight-light)]/50 border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-8 text-sm text-[var(--foreground)] appearance-none focus:outline-none focus:border-[var(--accent-cyan)]/50 cursor-pointer hover:bg-[var(--midnight-light)]/80 transition-colors"
                                 >
                                     <option value="all" className="bg-[var(--background)] text-[var(--foreground)]">All Authors</option>
                                     {uniqueAuthors.map(a => (
@@ -194,7 +212,7 @@ export default function ProjectsGrid({ projects }: Props) {
                                 <select
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value as SortOption)}
-                                    className="w-full bg-[var(--midnight)]/50 border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-8 text-sm text-[var(--foreground)] appearance-none focus:outline-none focus:border-[var(--accent-cyan)]/50 cursor-pointer hover:bg-[var(--midnight)]/80 transition-colors"
+                                    className="w-full bg-[var(--midnight-light)]/50 border border-[var(--glass-border)] rounded-xl py-2.5 pl-10 pr-8 text-sm text-[var(--foreground)] appearance-none focus:outline-none focus:border-[var(--accent-cyan)]/50 cursor-pointer hover:bg-[var(--midnight-light)]/80 transition-colors"
                                 >
                                     <option value="newest" className="bg-[var(--background)] text-[var(--foreground)]">Newest First</option>
                                     <option value="oldest" className="bg-[var(--background)] text-[var(--foreground)]">Oldest First</option>
@@ -205,33 +223,6 @@ export default function ProjectsGrid({ projects }: Props) {
                         </div>
                     </div>
 
-                    {/* Category Tabs */}
-                    <div className="flex flex-wrap justify-center gap-2">
-                        {categories.map((category) => {
-                            const isActive = activeCategory === category.id;
-                            return (
-                                <button
-                                    key={category.id}
-                                    onClick={() => {
-                                        setActiveCategory(category.id);
-                                        setShowAll(false);
-                                    }}
-                                    className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 flex items-center gap-2 border ${isActive
-                                        ? `bg-[${category.color}]/10 border-[${category.color}]/30 text-[${category.color}]`
-                                        : "bg-white/5 border-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
-                                        }`}
-                                    style={{
-                                        borderColor: isActive ? `${category.color}50` : undefined,
-                                        color: isActive ? category.color : undefined,
-                                        backgroundColor: isActive ? `${category.color}10` : undefined
-                                    }}
-                                >
-                                    {category.icon}
-                                    {category.label}
-                                </button>
-                            );
-                        })}
-                    </div>
                 </div>
             </section>
 
