@@ -4,6 +4,9 @@ import "./globals.css";
 import { Navbar } from "@/components/ui/Navbar";
 import { Footer } from "@/components/ui/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { CursorProvider } from "@/components/ui/CustomCursor";
+import { SavedProvider } from "@/components/SavedContext";
+import LenisProvider from "@/components/ui/LenisProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,9 +36,15 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
+          <CursorProvider>
+            <SavedProvider>
+              <LenisProvider>
+                <Navbar />
+                <main>{children}</main>
+                <Footer />
+              </LenisProvider>
+            </SavedProvider>
+          </CursorProvider>
         </ThemeProvider>
       </body>
     </html>
