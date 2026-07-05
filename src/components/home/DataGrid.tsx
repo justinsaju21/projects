@@ -37,12 +37,12 @@ export function DataGrid() {
         className="absolute inset-0"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px)
+            linear-gradient(to right, rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px',
-          maskImage: 'radial-gradient(circle at var(--mouse-x) var(--mouse-y), black 0%, transparent 500px)',
-          WebkitMaskImage: 'radial-gradient(circle at var(--mouse-x) var(--mouse-y), black 0%, transparent 500px)',
+          maskImage: 'radial-gradient(circle at var(--mouse-x) var(--mouse-y), black 0%, rgba(0,0,0,0.15) 500px, rgba(0,0,0,0.15) 100%)',
+          WebkitMaskImage: 'radial-gradient(circle at var(--mouse-x) var(--mouse-y), black 0%, rgba(0,0,0,0.15) 500px, rgba(0,0,0,0.15) 100%)',
         }}
       />
     </div>
