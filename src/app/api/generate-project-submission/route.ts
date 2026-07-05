@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProjectSubmissions } from '@/lib/sheets';
-import { generateProjectContent } from '@/lib/gemini';
+import { generateProjectContent, PartialProject } from "@/lib/gemini";
+
+export const maxDuration = 60; // Allow Vercel up to 60s for AI Generation
 
 export async function POST(req: NextRequest) {
     try {
