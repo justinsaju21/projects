@@ -2,12 +2,25 @@
 
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-import { DataGrid } from "./DataGrid";
+import { GridScan } from "./GridScan";
 
 export function HeroSection() {
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ background: 'var(--hero-bg)' }}>
-            <DataGrid />
+            <div className="absolute inset-0 z-0">
+                <GridScan
+                    sensitivity={0.55}
+                    lineThickness={1}
+                    linesColor="#2F293A"
+                    gridScale={0.1}
+                    scanColor="#FF9FFC"
+                    scanOpacity={0.4}
+                    enablePost
+                    bloomIntensity={0.6}
+                    chromaticAberration={0.002}
+                    noiseIntensity={0.01}
+                />
+            </div>
             {/* Animated Background from Photography Platform */}
             <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--hero-gradient-overlay)' }} />
             
