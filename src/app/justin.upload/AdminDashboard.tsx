@@ -322,7 +322,12 @@ export function AdminDashboard({ projects, submissions }: AdminDashboardProps) {
             {activeTab === 'projects' && (
                 <div className="grid gap-4">
                     {projects.map(project => (
-                        <div key={project.id} className="p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                        <div 
+                            key={project.id} 
+                            onClick={() => setEditingProject(project)}
+                            className="p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer hover:bg-white/5 transition-colors" 
+                            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+                        >
                             <div>
                                 <div className="flex items-center gap-3">
                                     <h3 style={{ color: 'var(--text-primary)', fontSize: 18, fontWeight: 500 }}>{project.title}</h3>
@@ -336,7 +341,10 @@ export function AdminDashboard({ projects, submissions }: AdminDashboardProps) {
                             </div>
                             <div className="flex gap-2">
                                 <button
-                                    onClick={() => setEditingProject(project)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setEditingProject(project);
+                                    }}
                                     className="px-4 py-2 rounded-xl text-sm font-medium transition-colors hover:bg-white/10 flex items-center gap-2"
                                     style={{ color: 'var(--text-primary)', border: '1px solid var(--border)' }}
                                 >
@@ -344,7 +352,10 @@ export function AdminDashboard({ projects, submissions }: AdminDashboardProps) {
                                 </button>
                                 <button
                                     disabled={isProcessing}
-                                    onClick={() => handleDeleteProject(project.id)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteProject(project.id);
+                                    }}
                                     className="px-4 py-2 rounded-xl text-sm font-medium transition-colors hover:bg-red-500/10 text-red-500 flex items-center gap-2"
                                     style={{ border: '1px solid rgba(239, 68, 68, 0.2)' }}
                                 >
