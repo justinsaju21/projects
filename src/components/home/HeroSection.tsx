@@ -19,12 +19,17 @@ export function HeroSection() {
                     bloomIntensity={0.6}
                     chromaticAberration={0.002}
                     noiseIntensity={0.01}
+                    lineJitter={0.1}
+                    scanGlow={0.5}
+                    scanSoftness={2}
+                    enableWebcam={false}
+                    showPreview={false}
                 />
             </div>
             {/* Animated Background from Photography Platform */}
             <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--hero-gradient-overlay)' }} />
             
-            <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-20">
+            <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-20 pointer-events-none">
 
                 {/* Main Title */}
                 <motion.h1
@@ -50,14 +55,14 @@ export function HeroSection() {
                 >
                     <a
                         href="#projects"
-                        className="px-8 py-3.5 rounded-full transition-all hover:scale-105"
+                        className="px-8 py-3.5 rounded-full transition-all hover:scale-105 pointer-events-auto"
                         style={{ background: 'var(--text-primary)', color: 'var(--bg-primary)', fontWeight: 500, fontSize: 15 }}
                     >
                         Explore Projects
                     </a>
                     <a
                         href="/submit"
-                        className="flex items-center gap-2 px-8 py-3.5 rounded-full transition-all"
+                        className="flex items-center gap-2 px-8 py-3.5 rounded-full transition-all pointer-events-auto"
                         style={{ background: 'var(--hero-btn-bg)', color: 'var(--text-primary)', border: '1px solid var(--hero-btn-border)', fontWeight: 500, fontSize: 15 }}
                     >
                         Submit Project
