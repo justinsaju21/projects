@@ -1,112 +1,75 @@
-import { getAllAuthors, urlFor } from '@/lib/sanity';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Users, ArrowRight } from 'lucide-react';
-import type { Author } from '@/lib/sanity';
-import { SidebarAdLayout } from '@/components/SidebarAdLayout';
-import { AdBanner } from '@/components/AdBanner';
-
-// Revalidate every 60 seconds
-export const revalidate = 60;
+import { getProjects } from "@/lib/sheets";
+import Link from "next/link";
+import { ArrowRight, User } from "lucide-react";
 
 export const metadata = {
-    title: 'Authors | Projects Hub',
-    description: 'Meet the contributors behind our projects',
+  title: 'Contributors | Echo Projects Hub',
+  description: 'Meet the brilliant minds behind our projects.',
 };
 
 export default async function AuthorsPage() {
-    const authors: Author[] = await getAllAuthors();
+  const projects = await getProjects();
+  
+  const authorStats = projects.reduce((acc, project) => {
+    if (!project.authorName) return acc;
+    if (!acc[project.authorName]) {
+      acc[project.authorName] = { count: 0 };
+    }
+    acc[project.authorName].count++;
+    return acc;
+  }, {} as Record<string, { count: number }>);
 
-    return (
-        <SidebarAdLayout>
-            <main className="min-h-screen pt-32 pb-20 px-6">
-                <div className="max-w-5xl mx-auto">
-                    {/* Header */}
-                    <div className="text-center mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 bg-accent-cyan/10 border border-accent-cyan/20">
-                            <Users className="w-4 h-4 text-accent-cyan" />
-                            <span className="text-sm font-medium text-accent-cyan">Our Contributors</span>
-                        </div>
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                            <span className="text-foreground">Meet the </span>
-                            <span className="text-gradient">Creators</span>
-                        </h1>
-                        <p className="text-foreground-muted text-lg max-w-2xl mx-auto">
-                            The talented individuals building excellent projects.
-                        </p>
-                    </div>
+  const authors = Object.entries(authorStats)
+    .sort((a, b) => b[1].count - a[1].count)
+    .map(([name, stats]) => ({ name, ...stats }));
 
-                    {/* Ad Banner */}
-                    <AdBanner slot="authors-header" className="mb-12" />
+  return (
+    <div className="pt-32 pb-24 min-h-[80vh]">
+      <div className="max-w-4xl mx-auto px-6">
+        <h1 
+          className="text-4xl md:text-5xl lg:text-6xl mb-6 tracking-tight"
+          style={{ fontFamily: "'Playfair Display', serif", color: "var(--text-primary)" }}
+        >
+          Our Contributors
+        </h1>
+        <p className="text-lg md:text-xl mb-16 max-w-2xl" style={{ color: "var(--text-secondary)" }}>
+          The brilliant minds sharing their projects, experiments, and innovations on Echo Projects Hub.
+        </p>
 
-                    {/* Authors Grid */}
-                    {authors && authors.length > 0 ? (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {authors.map((author) => (
-                                <Link key={author._id} href={`/author/${author.slug}`}>
-                                    <article className="glass rounded-2xl p-6 h-full hover:glow transition-all group">
-                                        <div className="flex flex-col items-center text-center">
-                                            {/* Profile Image */}
-                                            {author.image ? (
-                                                <div className="relative w-24 h-24 rounded-full overflow-hidden mb-4 ring-4 ring-accent-cyan/20 group-hover:ring-accent-cyan/40 transition-all">
-                                                    <Image
-                                                        src={urlFor(author.image).width(192).height(192).url()}
-                                                        alt={author.name}
-                                                        fill
-                                                        className="object-cover"
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <div className="w-24 h-24 rounded-full bg-accent-cyan/10 flex items-center justify-center mb-4 ring-4 ring-accent-cyan/20">
-                                                    <Users className="w-10 h-10 text-accent-cyan/50" />
-                                                </div>
-                                            )}
-
-                                            {/* Name */}
-                                            <h3 className="text-xl font-semibold text-foreground group-hover:text-accent-cyan transition-colors mb-1">
-                                                {author.name}
-                                            </h3>
-
-                                            {/* Role */}
-                                            {author.role && (
-                                                <span className="text-sm text-accent-purple mb-3">
-                                                    {author.role}
-                                                </span>
-                                            )}
-
-                                            {/* Bio Preview */}
-                                            {author.bio && (
-                                                <p className="text-foreground-muted text-sm line-clamp-2 mb-4">
-                                                    {author.bio}
-                                                </p>
-                                            )}
-
-                                            {/* View Profile Link */}
-                                            <div className="flex items-center gap-2 text-accent-cyan text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <span>View Profile</span>
-                                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                            </div>
-                                        </div>
-                                    </article>
-                                </Link>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="glass rounded-2xl p-16 text-center">
-                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent-cyan/10 mb-6">
-                                <Users className="w-8 h-8 text-accent-cyan" />
-                            </div>
-                            <h3 className="text-xl font-semibold text-foreground mb-2">No Authors Yet</h3>
-                            <p className="text-foreground-muted">
-                                Authors will appear here once they&apos;re added in Sanity Studio.
-                            </p>
-                        </div>
-                    )}
-
-                    {/* Footer Ad */}
-                    <AdBanner slot="authors-footer" className="mt-12" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {authors.map((author) => (
+            <Link 
+              key={author.name} 
+              href={`/author/${encodeURIComponent(author.name)}`}
+              className="group p-6 md:p-8 rounded-3xl transition-all duration-300 hover:scale-[1.02]"
+              style={{
+                background: "var(--glass-bg)",
+                border: "1px solid var(--glass-border)",
+                backdropFilter: "blur(12px)",
+              }}
+            >
+              <div className="flex items-center gap-6">
+                <div 
+                  className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden flex-shrink-0"
+                  style={{ background: "var(--bg-tertiary)" }}
+                >
+                  <User className="w-8 h-8" style={{ color: "var(--text-muted)" }} />
                 </div>
-            </main>
-        </SidebarAdLayout>
-    );
+                <div className="flex-1">
+                  <h2 className="text-xl font-medium mb-1 transition-colors" style={{ color: "var(--text-primary)" }}>
+                    {author.name}
+                  </h2>
+                  <p className="text-sm flex items-center gap-2" style={{ color: "var(--text-secondary)" }}>
+                    {author.count} Project{author.count === 1 ? '' : 's'} published
+                  </p>
+                </div>
+                <ArrowRight className="w-5 h-5 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all" style={{ color: "var(--text-primary)" }} />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
+

@@ -198,3 +198,118 @@ export async function updateProjectSubmissionStatus(id: string, status: 'approve
     return false;
   }
 }
+
+export async function deleteSubmission(id: string): Promise<boolean> {
+  try {
+    const sheets = await getSheetsClient()
+    const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID() })
+    const sheet = meta.data.sheets?.find(s => s.properties?.title === 'ProjectSubmissions')
+    if (sheet?.properties?.sheetId === undefined) return false
+    const sheetId = sheet.properties.sheetId
+    
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID(),
+      range: 'ProjectSubmissions!A:A',
+    })
+    
+    const rows = res.data.values
+    if (!rows) return false
+    
+    const rowIndex = rows.findIndex(row => row[0] === id)
+    if (rowIndex === -1) return false
+    
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SHEET_ID(),
+      requestBody: {
+        requests: [{ deleteDimension: { range: { sheetId: sheetId, dimension: 'ROWS', startIndex: rowIndex, endIndex: rowIndex + 1 } } }]
+      }
+    })
+    
+    return true
+  } catch (error) {
+    console.error("Error deleting submission:", error)
+    return false
+  }
+}
+
+export async function updateProject(id: string, updates: Partial<Project>): Promise<boolean> {
+  try {
+    const sheets = await getSheetsClient()
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID(),
+      range: 'Projects!A:M',
+    })
+    
+    const rows = res.data.values
+    if (!rows) return false
+    
+    const rowIndex = rows.findIndex(row => row[0] === id)
+    if (rowIndex === -1) return false
+    
+    const actualRowNumber = rowIndex + 1
+    const currentRow = rows[rowIndex]
+    const updatedProject = { ...rowToProject(currentRow), ...updates }
+    
+    const rowData = [
+      updatedProject.id,
+      updatedProject.title,
+      updatedProject.slug,
+      updatedProject.description,
+      updatedProject.category,
+      updatedProject.tags.join(', '),
+      updatedProject.github || '',
+      updatedProject.streamlit || '',
+      updatedProject.tinkercad || '',
+      updatedProject.external || '',
+      updatedProject.featured ? 'TRUE' : 'FALSE',
+      updatedProject.authorName,
+      updatedProject.order,
+    ]
+    
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID(),
+      range: `Projects!A${actualRowNumber}:M${actualRowNumber}`,
+      valueInputOption: 'RAW',
+      requestBody: { values: [rowData] },
+    })
+    
+    return true
+  } catch (error) {
+    console.error("Error updating project:", error)
+    return false
+  }
+}
+
+export async function deleteProject(id: string): Promise<boolean> {
+  try {
+    const sheets = await getSheetsClient()
+    const meta = await sheets.spreadsheets.get({ spreadsheetId: SHEET_ID() })
+    const sheet = meta.data.sheets?.find(s => s.properties?.title === 'Projects')
+    if (sheet?.properties?.sheetId === undefined) return false
+    const sheetId = sheet.properties.sheetId
+    
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID(),
+      range: 'Projects!A:A',
+    })
+    
+    const rows = res.data.values
+    if (!rows) return false
+    
+    const rowIndex = rows.findIndex(row => row[0] === id)
+    if (rowIndex === -1) return false
+    
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SHEET_ID(),
+      requestBody: {
+        requests: [{ deleteDimension: { range: { sheetId: sheetId, dimension: 'ROWS', startIndex: rowIndex, endIndex: rowIndex + 1 } } }]
+      }
+    })
+    
+    return true
+  } catch (error) {
+    console.error("Error deleting project:", error)
+    return false
+  }
+}
+
