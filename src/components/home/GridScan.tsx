@@ -406,12 +406,12 @@ export const GridScan = ({
         Math.max(0, snapBackDelay || 0)
       );
     };
-    el.addEventListener('mousemove', onMove);
+    window.addEventListener('mousemove', onMove);
     el.addEventListener('mouseenter', onEnter);
     if (scanOnClick) el.addEventListener('click', onClick);
     el.addEventListener('mouseleave', onLeave);
     return () => {
-      el.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mousemove', onMove);
       el.removeEventListener('mouseenter', onEnter);
       el.removeEventListener('mouseleave', onLeave);
       if (scanOnClick) el.removeEventListener('click', onClick);
