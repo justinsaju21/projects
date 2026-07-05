@@ -42,7 +42,7 @@ export async function generateProjectContent(partial: PartialProject): Promise<P
         'gemini-1.5-flash',
     ];
 
-    let prompt = GEMINI_PROMPT + `\n\nINPUT DATA:\n` + JSON.stringify(partial, null, 2);
+    const prompt = GEMINI_PROMPT + `\n\nINPUT DATA:\n` + JSON.stringify(partial, null, 2);
 
     let lastError: Error | null = null;
 
@@ -60,9 +60,9 @@ export async function generateProjectContent(partial: PartialProject): Promise<P
             const text = result.response.text();
             
             return JSON.parse(text) as PartialProject;
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(`Gemini model ${modelName} failed:`, error);
-            lastError = error;
+            lastError = error as Error;
         }
     }
 
