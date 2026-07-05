@@ -38,8 +38,12 @@ export async function generateProjectContent(partial: PartialProject): Promise<P
     
     // Use the latest flash model available
     const FALLBACK_MODELS = [
+        'gemini-3.1-flash-lite',
+        'gemini-3-flash',
+        'gemini-2.5-flash-lite',
+        'gemini-3.5-flash',
         'gemini-2.5-flash',
-        'gemini-1.5-flash',
+        'gemini-2.0-flash-lite'
     ];
 
     const prompt = GEMINI_PROMPT + `\n\nINPUT DATA:\n` + JSON.stringify(partial, null, 2);
