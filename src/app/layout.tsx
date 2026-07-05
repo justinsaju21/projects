@@ -11,18 +11,18 @@ import LenisProvider from "@/components/ui/LenisProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Projects Hub | Justin Jacob Saju",
+  title: "ECHO Projects | Justin Jacob Saju",
   description: "A curated collection of my experiments, demos, and live projects - VLSI, Embedded Systems, Web Apps, and more.",
   openGraph: {
-    title: "Projects Hub | Justin Jacob Saju",
+    title: "ECHO Projects | Justin Jacob Saju",
     description: "Explore my portfolio of VLSI designs, embedded systems, virtual labs, and web applications.",
     url: "https://projects.justinsaju.me",
-    siteName: "Justin's Projects Hub",
+    siteName: "ECHO Projects",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Projects Hub | Justin Jacob Saju",
+    title: "ECHO Projects | Justin Jacob Saju",
     description: "Explore my portfolio of VLSI designs, embedded systems, virtual labs, and web applications.",
   },
 };
