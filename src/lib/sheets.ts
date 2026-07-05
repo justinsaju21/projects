@@ -7,7 +7,7 @@ function getAuth() {
   return new google.auth.GoogleAuth({
     credentials: creds,
     scopes: [
-      'https://www.googleapis.com/auth/spreadsheets.readonly',
+      'https://www.googleapis.com/auth/spreadsheets',
     ],
   })
 }
