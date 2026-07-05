@@ -17,6 +17,10 @@ export function DataGrid() {
       container.style.setProperty("--mouse-y", `${y}px`);
     };
 
+    // Initialize to center
+    container.style.setProperty("--mouse-x", `${window.innerWidth / 2}px`);
+    container.style.setProperty("--mouse-y", `${window.innerHeight / 2}px`);
+
     window.addEventListener("mousemove", handleMouseMove);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
@@ -27,21 +31,18 @@ export function DataGrid() {
     <div
       ref={containerRef}
       className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
-      style={{
-        background: 'var(--bg-primary)',
-      }}
     >
       {/* Grid Pattern */}
       <div 
         className="absolute inset-0"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px)
+            linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px)
           `,
           backgroundSize: '40px 40px',
-          maskImage: 'radial-gradient(circle at var(--mouse-x, -100px) var(--mouse-y, -100px), black 0%, transparent 400px)',
-          WebkitMaskImage: 'radial-gradient(circle at var(--mouse-x, -100px) var(--mouse-y, -100px), black 0%, transparent 400px)',
+          maskImage: 'radial-gradient(circle at var(--mouse-x) var(--mouse-y), black 0%, transparent 500px)',
+          WebkitMaskImage: 'radial-gradient(circle at var(--mouse-x) var(--mouse-y), black 0%, transparent 500px)',
         }}
       />
     </div>
