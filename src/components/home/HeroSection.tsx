@@ -2,12 +2,12 @@
 
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-import { ParticleNetwork } from "./ParticleNetwork";
+import { DataGrid } from "./DataGrid";
 
 export function HeroSection() {
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden" style={{ background: 'var(--hero-bg)' }}>
-            <ParticleNetwork />
+            <DataGrid />
             {/* Animated Background from Photography Platform */}
             <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--hero-gradient-overlay)' }} />
             
