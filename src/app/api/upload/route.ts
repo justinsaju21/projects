@@ -35,13 +35,21 @@ export async function POST(req: NextRequest) {
             finalSlug = `${finalSlug}-${randomHash}`;
         }
 
+        // Parse tags if it's a string (from FormData Object.fromEntries)
+        let parsedTags: string[] = [];
+        if (typeof tags === 'string') {
+            parsedTags = tags.split(',').map((t: string) => t.trim()).filter(Boolean);
+        } else if (Array.isArray(tags)) {
+            parsedTags = tags;
+        }
+
         // 1. Insert into Projects sheet
         const projectId = await insertProject({
             title: title || '',
             slug: finalSlug,
             description: description || '',
             category: category || 'Uncategorized',
-            tags: tags || [],
+            tags: parsedTags,
             github: github || '',
             streamlit: '',
             tinkercad: '',
