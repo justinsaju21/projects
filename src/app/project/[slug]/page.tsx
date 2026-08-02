@@ -113,6 +113,26 @@ export default async function ProjectPage({ params }: Props) {
           )}
         </div>
 
+        {(project.external || project.streamlit || project.tinkercad) && (
+          <div className="mt-16 pt-8 border-t" style={{ borderColor: 'var(--border)' }}>
+            <h3 className="text-sm font-medium mb-6" style={{ color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Live Preview
+            </h3>
+            <div className="w-full rounded-2xl overflow-hidden border" style={{ borderColor: 'var(--border)', height: '700px', background: 'var(--bg-tertiary)' }}>
+              <iframe 
+                src={project.streamlit || project.tinkercad || project.external} 
+                className="w-full h-full"
+                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                title={`${project.title} Preview`}
+                loading="lazy"
+              />
+            </div>
+            <p className="text-sm mt-4 text-center" style={{ color: 'var(--text-muted)' }}>
+              If the preview doesn't load, the site may not allow embedding. Use the links at the top to open it directly.
+            </p>
+          </div>
+        )}
+
         {project.tags && project.tags.length > 0 && (
           <div className="mt-12 pt-8 border-t" style={{ borderColor: 'var(--border)' }}>
             <h3 className="text-sm font-medium mb-4" style={{ color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>

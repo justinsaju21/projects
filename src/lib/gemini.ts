@@ -72,3 +72,37 @@ export async function generateProjectContent(partial: PartialProject): Promise<P
 
     throw new Error(`All Gemini models failed. Last error: ${lastError?.message}`);
 }
+
+export async function checkGrammar(text: string): Promise<string> {
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+    const FALLBACK_MODELS = [
+        'gemini-3.1-flash-lite',
+        'gemini-3-flash',
+        'gemini-2.5-flash-lite',
+        'gemini-3.5-flash',
+        'gemini-2.5-flash',
+        'gemini-2.0-flash-lite'
+    ];
+
+    const prompt = `You are an expert editor. Review the following markdown text and correct any spelling, grammar, and punctuation errors. 
+Do NOT alter the original meaning, tone, or formatting (such as markdown tags). 
+Return ONLY the corrected text. Do not add any introductory or concluding remarks.
+
+Text to review:
+${text}`;
+
+    let lastError: Error | null = null;
+
+    for (const modelName of FALLBACK_MODELS) {
+        try {
+            const model = genAI.getGenerativeModel({ model: modelName });
+            const result = await model.generateContent(prompt);
+            return result.response.text();
+        } catch (error: unknown) {
+            console.error(`Gemini model ${modelName} failed for grammar check:`, error);
+            lastError = error as Error;
+        }
+    }
+
+    throw new Error(`All Gemini models failed. Last error: ${lastError?.message}`);
+}

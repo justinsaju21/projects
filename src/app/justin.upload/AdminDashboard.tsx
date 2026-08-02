@@ -4,6 +4,14 @@ import { useState, useEffect } from "react";
 import { Loader2, Wand2, Check, Trash2, Edit2 } from "lucide-react";
 import type { Project } from "@/types";
 import { createPortal } from "react-dom";
+import dynamic from "next/dynamic";
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
+
+const MDEditor = dynamic(
+  () => import("@uiw/react-md-editor"),
+  { ssr: false }
+);
 
 interface ProjectSubmission {
     id: string;
@@ -33,6 +41,7 @@ export function AdminDashboard({ projects, submissions }: AdminDashboardProps) {
 
     const [editingProject, setEditingProject] = useState<Project | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isCheckingGrammar, setIsCheckingGrammar] = useState(false);
 
     // Form state for AI assist (Projects)
     const [formData, setFormData] = useState({
@@ -61,6 +70,33 @@ export function AdminDashboard({ projects, submissions }: AdminDashboardProps) {
         }
         return () => { document.body.style.overflow = ''; };
     }, [editingProject]);
+
+    async function handleGrammarCheck(text: string, isEditing: boolean) {
+        if (!text) return;
+        setIsCheckingGrammar(true);
+        try {
+            const res = await fetch("/api/grammar-check", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            });
+            const data = await res.json();
+            if (res.ok && data.correctedText) {
+                if (isEditing && editingProject) {
+                    setEditingProject({ ...editingProject, content: data.correctedText });
+                } else {
+                    setFormData({ ...formData, content: data.correctedText });
+                }
+            } else {
+                alert("Failed to check grammar: " + (data.error || "Unknown error"));
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Failed to check grammar.");
+        } finally {
+            setIsCheckingGrammar(false);
+        }
+    }
 
     async function handleGenerateAI() {
         setGenerating(true);
@@ -402,8 +438,26 @@ export function AdminDashboard({ projects, submissions }: AdminDashboardProps) {
                                     <textarea value={editingProject.description} onChange={e => setEditingProject({...editingProject, description: e.target.value})} rows={4} className="w-full px-4 py-2.5 rounded-xl focus:outline-none resize-none" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border)', color: 'var(--text-primary)' }} />
                                 </div>
                                 <div className="col-span-full space-y-2">
-                                    <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Detailed Write-up (Markdown)</label>
-                                    <textarea value={editingProject.content || ''} onChange={e => setEditingProject({...editingProject, content: e.target.value})} rows={10} className="w-full px-4 py-2.5 rounded-xl focus:outline-none resize-y" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontFamily: 'monospace' }} placeholder="Write a detailed project post using markdown..." />
+                                    <div className="flex justify-between items-center">
+                                        <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Detailed Write-up (Markdown)</label>
+                                        <button 
+                                            type="button"
+                                            onClick={() => handleGrammarCheck(editingProject.content || '', true)}
+                                            disabled={isCheckingGrammar || !editingProject.content}
+                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                                            style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.2)' }}
+                                        >
+                                            {isCheckingGrammar ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
+                                            Fix Grammar & Spelling
+                                        </button>
+                                    </div>
+                                    <div data-color-mode="dark" style={{ borderRadius: '0.75rem', overflow: 'hidden', border: '1px solid var(--border)' }}>
+                                        <MDEditor
+                                            value={editingProject.content || ''}
+                                            onChange={(val) => setEditingProject({...editingProject, content: val || ''})}
+                                            height={400}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">
@@ -591,8 +645,26 @@ export function AdminDashboard({ projects, submissions }: AdminDashboardProps) {
                     </div>
 
                     <div className="space-y-2">
-                        <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Detailed Write-up (Markdown)</label>
-                        <textarea value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} rows={10} className="w-full px-4 py-2.5 rounded-xl focus:outline-none resize-y" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontFamily: 'monospace' }} placeholder="Write a detailed project post using markdown..." />
+                        <div className="flex justify-between items-center">
+                            <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Detailed Write-up (Markdown)</label>
+                            <button 
+                                type="button"
+                                onClick={() => handleGrammarCheck(formData.content, false)}
+                                disabled={isCheckingGrammar || !formData.content}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                                style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.2)' }}
+                            >
+                                {isCheckingGrammar ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
+                                Fix Grammar & Spelling
+                            </button>
+                        </div>
+                        <div data-color-mode="dark" style={{ borderRadius: '0.75rem', overflow: 'hidden', border: '1px solid var(--border)' }}>
+                            <MDEditor
+                                value={formData.content}
+                                onChange={(val) => setFormData({...formData, content: val || ''})}
+                                height={400}
+                            />
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
