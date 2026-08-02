@@ -45,6 +45,7 @@ export function AdminDashboard({ projects, submissions }: AdminDashboardProps) {
         github: 'https://github.com/justinsaju21',
         external: '',
         featured: false,
+        content: '',
     });
 
     const pendingSubmissions = submissions.filter(s => s.status === 'pending');
@@ -400,6 +401,10 @@ export function AdminDashboard({ projects, submissions }: AdminDashboardProps) {
                                     <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Description</label>
                                     <textarea value={editingProject.description} onChange={e => setEditingProject({...editingProject, description: e.target.value})} rows={4} className="w-full px-4 py-2.5 rounded-xl focus:outline-none resize-none" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border)', color: 'var(--text-primary)' }} />
                                 </div>
+                                <div className="col-span-full space-y-2">
+                                    <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Detailed Write-up (Markdown)</label>
+                                    <textarea value={editingProject.content || ''} onChange={e => setEditingProject({...editingProject, content: e.target.value})} rows={10} className="w-full px-4 py-2.5 rounded-xl focus:outline-none resize-y" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontFamily: 'monospace' }} placeholder="Write a detailed project post using markdown..." />
+                                </div>
 
                                 <div className="space-y-2">
                                     <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>GitHub URL</label>
@@ -527,7 +532,7 @@ export function AdminDashboard({ projects, submissions }: AdminDashboardProps) {
                                     onClick={() => {
                                         setActiveSubmissionId(null);
                                         setFormData({
-                                            title: '', slug: '', category: '', authorName: 'Justin Jacob Saju', description: '', tags: '', github: 'https://github.com/justinsaju21', external: '', featured: false
+                                            title: '', slug: '', category: '', authorName: 'Justin Jacob Saju', description: '', tags: '', github: 'https://github.com/justinsaju21', external: '', featured: false, content: ''
                                         });
                                         const formElement = document.querySelector('form') as HTMLFormElement;
                                         if (formElement) {
@@ -583,6 +588,11 @@ export function AdminDashboard({ projects, submissions }: AdminDashboardProps) {
                     <div className="space-y-2">
                         <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Description</label>
                         <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} rows={5} className="w-full px-4 py-2.5 rounded-xl focus:outline-none resize-none" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border)', color: 'var(--text-primary)' }} />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Detailed Write-up (Markdown)</label>
+                        <textarea value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} rows={10} className="w-full px-4 py-2.5 rounded-xl focus:outline-none resize-y" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontFamily: 'monospace' }} placeholder="Write a detailed project post using markdown..." />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

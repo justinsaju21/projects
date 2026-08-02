@@ -51,6 +51,7 @@ function rowToProject(row: string[]): Project {
     featured: parseBoolean(row[10]),
     authorName: row[11] ?? '',
     order: parseIntSafe(row[12], 999),
+    content: row[13] || undefined,
   }
 }
 
@@ -59,7 +60,7 @@ export async function getProjects(): Promise<Project[]> {
     const sheets = await getSheetsClient()
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID(),
-      range: 'Projects!A2:M',
+      range: 'Projects!A2:N',
     })
     const rows = (res.data.values ?? []) as string[][]
     const projects = rows.filter((r) => r[0]).map(rowToProject)
@@ -87,10 +88,11 @@ export async function insertProject(project: Omit<Project, 'id'>): Promise<strin
     project.featured ? 'TRUE' : 'FALSE',
     project.authorName,
     project.order,
+    project.content || '',
   ]
   await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID(),
-    range: 'Projects!A:M',
+    range: 'Projects!A:N',
     valueInputOption: 'RAW',
     insertDataOption: 'INSERT_ROWS',
     requestBody: { values: [row] },
@@ -237,7 +239,7 @@ export async function updateProject(id: string, updates: Partial<Project>): Prom
     const sheets = await getSheetsClient()
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID(),
-      range: 'Projects!A:M',
+      range: 'Projects!A:N',
     })
     
     const rows = res.data.values
@@ -264,11 +266,12 @@ export async function updateProject(id: string, updates: Partial<Project>): Prom
       updatedProject.featured ? 'TRUE' : 'FALSE',
       updatedProject.authorName,
       updatedProject.order,
+      updatedProject.content || '',
     ]
     
     await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID(),
-      range: `Projects!A${actualRowNumber}:M${actualRowNumber}`,
+      range: `Projects!A${actualRowNumber}:N${actualRowNumber}`,
       valueInputOption: 'RAW',
       requestBody: { values: [rowData] },
     })

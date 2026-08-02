@@ -23,7 +23,8 @@ export async function POST(req: NextRequest) {
             github,
             external,
             image,
-            featured
+            featured,
+            content
         } = body;
 
         // Ensure slug has a random hash for uniqueness if not provided correctly, or simply append one to guarantee no collisions
@@ -57,6 +58,7 @@ export async function POST(req: NextRequest) {
             featured: featured || false,
             authorName: authorName || 'Anonymous',
             order: 999, // New projects go to the end or we can determine order logic
+            content: content || '',
         });
 
         // 2. Mark submission as approved

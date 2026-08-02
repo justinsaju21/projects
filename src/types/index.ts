@@ -27,6 +27,7 @@ export interface Project {
   featured: boolean;
   authorName: string;
   order: number;
+  content?: string;
 }
 
 export interface Category {

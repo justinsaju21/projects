@@ -4,6 +4,8 @@ import { Github, ExternalLink, Pen, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Metadata } from "next";
 import { ReadingProgressBar } from "@/components/ui/ReadingProgressBar";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -100,9 +102,15 @@ export default async function ProjectPage({ params }: Props) {
         </header>
 
         <div className="prose prose-invert prose-lg max-w-none prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)] prose-strong:text-white prose-li:text-[var(--text-secondary)] prose-blockquote:text-[var(--text-muted)] prose-blockquote:border-l-[var(--border)] prose-a:text-blue-400 hover:prose-a:text-blue-300 transition-colors" style={{ color: 'var(--text-secondary)' }}>
-          <p className="text-lg leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            This project does not have a detailed write-up yet. You can find more information by visiting the project links above.
-          </p>
+          {project.content ? (
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {project.content}
+            </ReactMarkdown>
+          ) : (
+            <p className="text-lg leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+              This project does not have a detailed write-up yet. You can find more information by visiting the project links above.
+            </p>
+          )}
         </div>
 
         {project.tags && project.tags.length > 0 && (
