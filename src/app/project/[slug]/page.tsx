@@ -6,6 +6,7 @@ import { Metadata } from "next";
 import { ReadingProgressBar } from "@/components/ui/ReadingProgressBar";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { AdBanner } from "@/components/ui/AdBanner";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -101,6 +102,9 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </header>
 
+        {/* Top Ad Unit - High Visibility */}
+        <AdBanner slot="project-top" className="mb-8" />
+
         <div className="prose prose-invert prose-lg max-w-none prose-headings:text-[var(--text-primary)] prose-p:text-[var(--text-secondary)] prose-strong:text-white prose-li:text-[var(--text-secondary)] prose-blockquote:text-[var(--text-muted)] prose-blockquote:border-l-[var(--border)] prose-a:text-blue-400 hover:prose-a:text-blue-300 transition-colors" style={{ color: 'var(--text-secondary)' }}>
           {project.content ? (
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
@@ -112,6 +116,9 @@ export default async function ProjectPage({ params }: Props) {
             </p>
           )}
         </div>
+
+        {/* Middle Ad Unit - After content before interactive elements */}
+        <AdBanner slot="project-middle" className="mt-12 mb-8" />
 
         {(project.external || project.streamlit || project.tinkercad) && (() => {
           let iframeUrl = project.streamlit || project.tinkercad || project.external || '';
@@ -164,6 +171,10 @@ export default async function ProjectPage({ params }: Props) {
             </div>
           </div>
         )}
+
+        {/* Bottom Ad Unit - Page end visibility */}
+        <AdBanner slot="project-bottom" className="mt-16" />
+
       </div>
     </div>
     </>
