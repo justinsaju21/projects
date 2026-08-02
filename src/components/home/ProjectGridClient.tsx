@@ -101,6 +101,7 @@ export function ProjectGridClient({ projects, hideSearch = false }: ProjectGridC
                         <div className="relative w-full md:max-w-md group">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors" style={{ color: 'var(--text-muted)' }} />
                             <input
+                                id="projects-search"
                                 type="text"
                                 placeholder="Search projects..."
                                 value={searchQuery}

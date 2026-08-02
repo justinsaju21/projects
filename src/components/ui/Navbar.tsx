@@ -9,8 +9,8 @@ import { ThemeToggle } from "../ThemeToggle";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/", label: "Projects" },
-  { href: "/author/Justin%20Jacob%20Saju", label: "Author" },
+  { href: "/#projects", label: "Projects" },
+  { href: "/author", label: "Authors" },
   { href: "https://justinsaju.me", label: "Gateway" },
 ];
 
@@ -95,7 +95,7 @@ export function Navbar() {
               <Link href="/saved" style={{ color: "var(--text-secondary)" }} className="hover:text-[var(--text-primary)] transition-colors" aria-label="Saved Projects">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
               </Link>
-              <Link href="/" style={{ color: "var(--text-secondary)" }} className="hover:text-[var(--text-primary)] transition-colors" aria-label="Search Projects">
+              <Link href="/#projects-search" style={{ color: "var(--text-secondary)" }} className="hover:text-[var(--text-primary)] transition-colors" aria-label="Search Projects">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
               </Link>
               <ThemeToggle />
